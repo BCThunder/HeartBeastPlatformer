@@ -3,6 +3,7 @@ extends CenterContainer
 @onready var start_button = %StartButton
 
 func _ready():
+	RenderingServer.set_default_clear_color(Color.BLACK)
 	start_button.grab_focus()
 
 func _on_start_button_pressed():
