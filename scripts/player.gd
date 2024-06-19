@@ -33,10 +33,11 @@ func _physics_process(delta):
 	
 func apply_gravity(delta):
 	# Add the gravity.
-	if not is_on_floor() and is_on_wall() and velocity.y > 0:
-		velocity.y += 0.25 * gravity * delta
-	elif not is_on_floor():
-		velocity.y += gravity * delta
+	if not is_on_floor():
+		if is_on_wall() and velocity.y > 0:
+			velocity.y += 0.25 * gravity * delta
+		else:
+			velocity.y += gravity * delta
 
 func handle_wall_jump():
 	if not is_on_wall_only(): return
