@@ -87,6 +87,7 @@ size = Vector2(8, 14)
 [node name="Player" type="CharacterBody2D"]
 floor_constant_speed = true
 floor_snap_length = 3.5
+safe_margin = 0.1
 script = ExtResource("1_eo72m")
 movement_data = ExtResource("2_vdgfl")
 
