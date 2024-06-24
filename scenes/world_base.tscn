@@ -1,9 +1,46 @@
-[gd_scene load_steps=5 format=3 uid="uid://c6818xcs5nhj3"]
+[gd_scene load_steps=8 format=3 uid="uid://c6818xcs5nhj3"]
 
 [ext_resource type="Script" path="res://scripts/world.gd" id="1_vonr6"]
 [ext_resource type="PackedScene" uid="uid://2ud7lg70rkhc" path="res://scenes/player.tscn" id="2_wccns"]
 [ext_resource type="PackedScene" uid="uid://chsb0lebw0bw5" path="res://scenes/level_completed.tscn" id="5_cwmfs"]
 [ext_resource type="PackedScene" uid="uid://vu2d5bh473qp" path="res://scenes/level_tile_map.tscn" id="6_ijo7r"]
+
+[sub_resource type="Animation" id="Animation_xs754"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CanvasLayer/StartIn/CenterContainer/StartInLabel:text")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": ["Start in: 3"]
+}
+
+[sub_resource type="Animation" id="Animation_a2gm8"]
+resource_name = "countdown"
+length = 3.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CanvasLayer/StartIn/CenterContainer/StartInLabel:text")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1, 2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": ["Start in: 3", "Start in: 2", "Start in: 1"]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_10ff8"]
+_data = {
+"RESET": SubResource("Animation_xs754"),
+"countdown": SubResource("Animation_a2gm8")
+}
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_vonr6")
@@ -16,4 +53,50 @@ collision_layer = 2
 [node name="LevelCompleted" parent="CanvasLayer" instance=ExtResource("5_cwmfs")]
 visible = false
 
+[node name="StartIn" type="ColorRect" parent="CanvasLayer"]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.556863)
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/StartIn"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="StartInLabel" type="Label" parent="CanvasLayer/StartIn/CenterContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Start in: 3"
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 8.0
+offset_bottom = 16.0
+grow_horizontal = 2
+
+[node name="LevelTimeLabel" type="Label" parent="CanvasLayer/CenterContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+vertical_alignment = 1
+
 [node name="LevelTileMap" parent="." instance=ExtResource("6_ijo7r")]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+process_mode = 3
+libraries = {
+"": SubResource("AnimationLibrary_10ff8")
+}
+
+[connection signal="next_level" from="CanvasLayer/LevelCompleted" to="." method="_on_level_completed_next_level"]
+[connection signal="retry" from="CanvasLayer/LevelCompleted" to="." method="_on_level_completed_retry"]

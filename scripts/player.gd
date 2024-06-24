@@ -21,7 +21,6 @@ func _physics_process(delta):
 	handle_air_acceleration(direction, delta)
 	apply_friction(direction, delta)
 	apply_air_resistance(direction, delta)
-	update_animations(direction)
 		
 	move_and_slide()
 	
@@ -31,10 +30,12 @@ func _physics_process(delta):
 		coyote_jump_timer.start()
 	just_wall_jumped = false
 	
+	update_animations(direction)
+	
 func apply_gravity(delta):
 	# Add the gravity.
 	if not is_on_floor():
-		if is_on_wall() and velocity.y > 0:
+		if is_on_wall() and velocity.y > 0 and (Input.is_action_pressed("MoveLeft") or Input.is_action_pressed("MoveRight")):
 			velocity.y += 0.25 * gravity * delta
 		else:
 			velocity.y += gravity * delta
@@ -54,8 +55,9 @@ func handle_jump():
 		air_jump = true
 
 	if is_on_floor() or coyote_jump_timer.time_left > 0.0:
-		if Input.is_action_just_pressed("Jump"):
+		if Input.is_action_pressed("Jump"):
 			velocity.y = movement_data.jump_velocity
+			coyote_jump_timer.stop()
 	elif not is_on_floor():
 		if Input.is_action_just_pressed("Jump") and velocity.y < movement_data.jump_velocity / 2:
 			velocity.y = movement_data.jump_velocity / 2
